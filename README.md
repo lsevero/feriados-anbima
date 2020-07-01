@@ -1,10 +1,26 @@
 # feriados-anbima
 
-A Clojure library designed to ... well, that part is up to you.
+[![Clojars Project](https://img.shields.io/clojars/v/feriados-anbima.svg)](https://clojars.org/feriados-anbima)
+
+Uma bilioteca feita para facilitar a detecção de feriados brasileiros programaticamente.
 
 ## Usage
 
-FIXME
+```clojure
+(ns seu-ns
+  (:require [feriados-anbima.core :refer :all] 
+            [clj-time.core :as t]
+            [clj-time.local :as l]
+            [clj-time.predicates :as p]))
+
+
+(feriado? (t/date-time 2078 12 25))
+(feriado? (t/local-date-time 2078 12 25))
+(feriado? (t/now))
+(dia-util? (t/date-time 2078 12 25))
+(dia-util? (t/local-date-time 2078 12 25))
+(dia-util? (t/now))
+```
 
 ## License
 
