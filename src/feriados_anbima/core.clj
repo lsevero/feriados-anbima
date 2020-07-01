@@ -5,9 +5,8 @@
             [clj-time.coerce :as c]
             [clj-time.format :as f]
             [clj-time.predicates :as p])
-  (:import [java.util Date]
-           [org.joda.time DateTime]
-           [java.time LocalDateTime Instant ZonedDateTime Month]))
+  (:import [org.joda.time DateTime]
+           [java.time LocalDateTime ZonedDateTime Month]))
 
 (def ^:const feriados-anbima #{
 "20010101"
@@ -954,8 +953,6 @@
   (parse-date [date]))
 
 (extend-protocol ParseDate
-  Date                        (parse-date [date]
-                                (->> date c/from-date (f/unparse custom-formatter)))
   DateTime                    (parse-date [date]
                                 (->> date (f/unparse custom-formatter)))
   org.joda.time.LocalDateTime (parse-date [date]
@@ -975,16 +972,11 @@
                                       hour (.getHour date)
                                       minute (.getMinute date)
                                       sec (.getSecond date)]
-                                  (f/unparse custom-formatter (t/date-time year month day hour minute sec))))
-  Instant                     (parse-date [date]
-                                (->> date jt/java-date c/from-date (f/unparse custom-formatter))))
-
+                                  (f/unparse custom-formatter (t/date-time year month day hour minute sec)))))
 (comment (parse-date (jt/zoned-date-time)))
 (comment (parse-date (l/local-now)))
 (comment (parse-date (t/now)))
-(comment (parse-date (Date.)))
 (comment (parse-date (LocalDateTime/now)))
-(comment (parse-date (jt/instant)))
 
 (defn feriado?
   "Checa se a data é um feriado de acordo com a tabela de feriados da ANBIMA"
@@ -993,15 +985,12 @@
 (comment (feriado? (jt/zoned-date-time 2078 12 25)))
 (comment (feriado? (t/date-time 2078 12 25)))
 (comment (feriado? (t/local-date-time 2078 12 25)))
-(comment (feriado? (Date. 2078 12 25)))
 (comment (feriado? (t/now)))
 
 (defn dia-util?
   "Checa se a data é um dia da semana e não é um feriado"
   [date]
   (cond 
-    (= (type date) Instant) (and (-> date jt/java-date c/from-date p/weekday?)
-                                 (not (feriado? date)))
     (= (type date) ZonedDateTime) (let [day (.getDayOfMonth date)
                                         month (.getValue ^Month (.getMonth date))
                                         year (.getYear date)
@@ -1013,10 +1002,7 @@
                                          (not (feriado? joda-date))))
     :else (and (p/weekday? date)
                (not (feriado? date)))))
-
 (comment (dia-util? (jt/zoned-date-time 2078 12 25)))
 (comment (dia-util? (t/date-time 2078 12 25)))
 (comment (dia-util? (t/local-date-time 2078 12 25)))
-(comment (dia-util? (Date. 2078 12 25)))
 (comment (dia-util? (t/now)))
-(comment (dia-util? (jt/instant)))
