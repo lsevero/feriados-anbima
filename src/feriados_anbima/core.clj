@@ -1006,3 +1006,26 @@
 (comment (dia-util? (t/date-time 2078 12 25)))
 (comment (dia-util? (t/local-date-time 2078 12 25)))
 (comment (dia-util? (t/now)))
+
+(defn ultimo-dia-util
+  "Retorna o último dia útil, não considera o dia atual."
+  ([date]
+   (let [ontem (t/minus date (t/days 1))]
+     (if (dia-util? ontem)
+       ontem
+       (recur ontem))))
+  ([]
+   (ultimo-dia-util (l/local-now))))
+(comment (ultimo-dia-util))
+
+(defn range-ultimo-dia-util
+  "Cria uma lista de datas desde o último dia útil até o dia atual (inclusivo)"
+  [hoje]
+  (let [ultimo (ultimo-dia-util hoje)]
+    (loop [date ultimo
+           dates [ultimo]]
+      (if (= date hoje)
+        dates
+        (let [amanha (t/plus date (t/days 1))]
+          (recur amanha (conj dates amanha)))))))
+(comment (butlast (range-ultimo-dia-util (l/local-now))))
