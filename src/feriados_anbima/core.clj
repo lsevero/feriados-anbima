@@ -991,12 +991,12 @@
   "Checa se a data é um dia da semana e não é um feriado"
   [date]
   (cond 
-    (= (type date) ZonedDateTime) (let [day (.getDayOfMonth date)
-                                        month (.getValue ^Month (.getMonth date))
-                                        year (.getYear date)
-                                        hour (.getHour date)
-                                        minute (.getMinute date)
-                                        sec (.getSecond date)
+    (= (type date) ZonedDateTime) (let [day (.getDayOfMonth ^ZonedDateTime date)
+                                        month (.getValue ^Month (.getMonth ^ZonedDateTime date))
+                                        year (.getYear ^ZonedDateTime date)
+                                        hour (.getHour ^ZonedDateTime date)
+                                        minute (.getMinute ^ZonedDateTime date)
+                                        sec (.getSecond ^ZonedDateTime date)
                                         joda-date (t/date-time year month day hour minute sec)]
                                     (and (p/weekday? joda-date)
                                          (not (feriado? joda-date))))
