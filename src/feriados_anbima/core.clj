@@ -1,12 +1,21 @@
 (ns feriados-anbima.core
   (:require [java-time :as jt]
-            [clj-time.core :as t]
+            [clj-time.core :as t :refer [DateTimeProtocol]]
             [clj-time.local :as l]
             [clj-time.coerce :as c]
             [clj-time.format :as f]
             [clj-time.predicates :as p])
   (:import [org.joda.time DateTime]
-           [java.time LocalDateTime ZonedDateTime Month]))
+           [java.time LocalDate LocalDateTime ZonedDateTime Month]
+           ))
+
+(extend-protocol DateTimeProtocol
+  LocalDate
+  (day-of-week [this]
+    (-> this .getDayOfWeek .getValue))
+  LocalDateTime
+  (day-of-week [this]
+    (-> this .getDayOfWeek .getValue)))
 
 (def ^:const feriados-anbima #{
 "20010101"
@@ -965,6 +974,11 @@
                                       minute (.getMinute date)
                                       sec (.getSecond date)]
                                   (f/unparse custom-formatter (t/date-time year month day hour minute sec))))
+  LocalDate                   (parse-date [^LocalDate date]
+                                (let [day (.getDayOfMonth date)
+                                      month (.getValue ^Month (.getMonth date))
+                                      year (.getYear date)]
+                                  (f/unparse custom-formatter (t/date-time year month day))))
   ZonedDateTime               (parse-date [^ZonedDateTime date]
                                 (let [day (.getDayOfMonth date)
                                       month (.getValue ^Month (.getMonth date))
@@ -986,6 +1000,8 @@
 (comment (feriado? (t/date-time 2078 12 25)))
 (comment (feriado? (t/local-date-time 2078 12 25)))
 (comment (feriado? (t/now)))
+(comment (feriado? (LocalDateTime/now)))
+(comment (feriado? (LocalDate/now)))
 
 (defn dia-util?
   "Checa se a data é um dia da semana e não é um feriado"
@@ -1006,6 +1022,8 @@
 (comment (dia-util? (t/date-time 2078 12 25)))
 (comment (dia-util? (t/local-date-time 2078 12 25)))
 (comment (dia-util? (t/now)))
+(comment (dia-util? (LocalDateTime/now)))
+(comment (dia-util? (LocalDate/now)))
 
 (defn ultimo-dia-util
   "Retorna o último dia útil, não considera o dia atual."
