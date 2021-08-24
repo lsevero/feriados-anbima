@@ -1047,3 +1047,12 @@
         (let [amanha (t/plus date (t/days 1))]
           (recur amanha (conj dates amanha)))))))
 (comment (butlast (range-ultimo-dia-util (l/local-now))))
+
+(defn proximo-dia-util
+  "Retorna o próximo dia útil a partir de uma data, se a data informada for um dia útil será retornada inalterada."
+  [date]
+  (if (dia-util? date)
+    date
+    (recur (t/plus date (t/days 1)))))
+
+(comment (proximo-dia-util (LocalDateTime/now)))
