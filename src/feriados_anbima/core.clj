@@ -13,15 +13,15 @@
   LocalDate
   (day-of-week [this]
     (-> this .getDayOfWeek .getValue))
-  (plus- [this ^org.joda.time.Period period]
-    (jt/plus this (-> period .getDays jt/days)))
+  (plus- [this ^org.joda.time.ReadablePeriod period]
+    (jt/plus this (-> period .toPeriod .getDays jt/days)))
   LocalDateTime
-  (plus- [this ^org.joda.time.Period period]
-    (jt/plus this (-> period .getDays jt/days)))
+  (plus- [this ^org.joda.time.ReadablePeriod period]
+    (jt/plus this (-> period .toPeriod .getDays jt/days)))
   (day-of-week [this]
     (-> this .getDayOfWeek .getValue))
   ZonedDateTime
-  (plus- [this ^org.joda.time.Period period]
+  (plus- [this ^org.joda.time.ReadablePeriod period]
     (.plusDays this (.getDays period)))
   (day-of-week [this]
     (-> this .getDayOfWeek .getValue)))
@@ -1067,4 +1067,5 @@
 (comment (proximo-dia-util (LocalDateTime/now))
          (proximo-dia-util (t/local-date-time 2021 8 28))
          (proximo-dia-util (jt/zoned-date-time 2021 8 28))
-         (proximo-dia-util (jt/local-date-time 2021 8 28)))
+         (proximo-dia-util (jt/local-date-time 2021 8 28))
+         (proximo-dia-util (jt/local-date 2021 8 28)))
