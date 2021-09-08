@@ -15,14 +15,20 @@
     (-> this .getDayOfWeek .getValue))
   (plus- [this ^org.joda.time.ReadablePeriod period]
     (jt/plus this (-> period .toPeriod .getDays jt/days)))
+  (minus- [this ^org.joda.time.ReadablePeriod period]
+    (jt/minus this (-> period .toPeriod .getDays jt/days)))
   LocalDateTime
   (plus- [this ^org.joda.time.ReadablePeriod period]
     (jt/plus this (-> period .toPeriod .getDays jt/days)))
+  (minus- [this ^org.joda.time.ReadablePeriod period]
+    (jt/minus this (-> period .toPeriod .getDays jt/days)))
   (day-of-week [this]
     (-> this .getDayOfWeek .getValue))
   ZonedDateTime
   (plus- [this ^org.joda.time.ReadablePeriod period]
     (.plusDays this (.getDays period)))
+  (minus- [this ^org.joda.time.ReadablePeriod period]
+    (.minusDays this (.getDays period)))
   (day-of-week [this]
     (-> this .getDayOfWeek .getValue)))
 
@@ -1042,8 +1048,13 @@
        ontem
        (recur ontem))))
   ([]
-   (ultimo-dia-util (l/local-now))))
-(comment (ultimo-dia-util))
+   (ultimo-dia-util (LocalDate/now))))
+(comment (ultimo-dia-util)
+         (ultimo-dia-util (LocalDateTime/now))
+         (ultimo-dia-util (t/local-date-time 2021 8 28))
+         (ultimo-dia-util (jt/zoned-date-time 2021 8 28))
+         (ultimo-dia-util (jt/local-date-time 2021 8 28))
+         (ultimo-dia-util (jt/local-date 2021 8 28)))
 
 (defn range-ultimo-dia-util
   "Cria uma lista de datas desde o último dia útil até o dia atual (inclusivo)"
@@ -1059,12 +1070,15 @@
 
 (defn proximo-dia-util
   "Retorna o próximo dia útil a partir de uma data, se a data informada for um dia útil será retornada inalterada."
-  [date]
-  (if (dia-util? date)
-    date
-    (recur (t/plus date (t/days 1)))))
+  ([date]
+   (if (dia-util? date)
+     date
+     (recur (t/plus date (t/days 1)))))
+  ([]
+   (proximo-dia-util (LocalDate/now))))
 
-(comment (proximo-dia-util (LocalDateTime/now))
+(comment (proximo-dia-util)
+         (proximo-dia-util (LocalDateTime/now))
          (proximo-dia-util (t/local-date-time 2021 8 28))
          (proximo-dia-util (jt/zoned-date-time 2021 8 28))
          (proximo-dia-util (jt/local-date-time 2021 8 28))
