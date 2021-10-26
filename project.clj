@@ -1,4 +1,4 @@
-(defproject feriados-anbima "0.2.6"
+(defproject feriados-anbima "0.2.7"
   :description "Bilioteca para facilitar a checagem de feriados brasileiros e dias úteis"
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
