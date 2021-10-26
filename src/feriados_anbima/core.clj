@@ -32,7 +32,7 @@
   (day-of-week [this]
     (-> this .getDayOfWeek .getValue)))
 
-(def ^:const feriados-anbima #{
+(def ^:dynamic feriados-anbima #{
 "20010101"
 "20010226"
 "20010227"
